@@ -1,0 +1,26 @@
+flowchart TD
+  A([Inicio: Luis tiene la orden de Cardiología]) --> B[1.0 Inicio]
+  B -->|Reservar cita| C[2.1 Paso 1: especialidad, médico y lugar]
+  C --> D{¿Eligió especialidad<br/>y lugar?}
+  D -- No --> D1[Mensaje bajo el grupo<br/>y foco en el campo]:::error
+  D1 --> C
+  D -- Sí --> E[2.2 Paso 2: escribe o elige la fecha]
+  E --> F{¿Fecha válida?}
+  F -- No --> F1[Mensaje junto al campo: causa y corrección<br/>aria-invalid + aria-describedby<br/>v2: propone la fecha válida más cercana]:::error
+  F1 -->|corrige sin perder datos| E
+  F -- Sí --> G[Se muestran los horarios del día]
+  G --> H{¿Eligió horario?}
+  H -- No --> H1[Mensaje: Elija un horario disponible]:::error
+  H1 --> G
+  H -- Sí --> I[2.3 Paso 3: resumen editable]
+  I --> J{¿Datos correctos?}
+  J -- No: Cambiar fecha u hora --> E
+  J -- No: Cambiar especialidad --> C
+  J -- Sí --> K[Confirmar cita<br/>botón bloqueado + Registrando su cita…]
+  K --> L{¿El sistema respondió bien?}
+  L -- No --> L1[No pudimos registrar su cita<br/>datos conservados + Intentar de nuevo]:::error
+  L1 --> K
+  L -- Sí --> M[2.4 Comprobante con código CC-XXXX]:::exito
+  M --> N([Fin: Luis tiene su cita y su código])
+  classDef error fill:#fff1f2,stroke:#a3001b,stroke-width:3px,color:#111
+  classDef exito fill:#eefaf2,stroke:#0a5c27,stroke-width:3px,color:#111
