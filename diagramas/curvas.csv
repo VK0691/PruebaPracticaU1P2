@@ -1,9 +1,9 @@
 touchpoint,antes,despues,momento_verdad,tipo_despues
-T1 Orden\nmédica,0,0,no,estimacion
-T2 Página\nde inicio,-1,1,no,estimacion
-T3 Identificación\ncon cédula,-1,0,no,estimacion
-T4 Especialidad\ny médico,0,1,no,estimacion
-T5 Elegir\nla fecha,-2,0,si,estimacion
-T6 Elegir\nel horario,-1,1,no,estimacion
-T7 Confirmar\nla reserva,-2,1,si,estimacion
-T8 Comprobante\ny recordatorio,-1,2,no,estimacion
+T1 SMS con\ncódigo,1,1,no,estimacion
+T2 Abrir con\nseñal débil,-1,0,no,estimacion
+T3 Identificación\ncédula + código,0,1,no,estimacion
+T4 Ver detalle\nde la cita,1,1,no,estimacion
+T5 Confirmar:\ncarga,-2,0,si,estimacion
+T6 Se corta\nla señal,-2,0,no,estimacion
+T7 Consultar\nel estado,-1,1,si,estimacion
+T8 Llegada al\ncentro de salud,-1,1,no,estimacion

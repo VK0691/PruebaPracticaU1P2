@@ -1,26 +1,26 @@
 flowchart TD
-  A([Inicio: Luis tiene la orden de Cardiología]) --> B[1.0 Inicio]
-  B -->|Reservar cita| C[2.1 Paso 1: especialidad, médico y lugar]
-  C --> D{¿Eligió especialidad<br/>y lugar?}
-  D -- No --> D1[Mensaje bajo el grupo<br/>y foco en el campo]:::error
-  D1 --> C
-  D -- Sí --> E[2.2 Paso 2: escribe o elige la fecha]
-  E --> F{¿Fecha válida?}
-  F -- No --> F1[Mensaje junto al campo: causa y corrección<br/>aria-invalid + aria-describedby<br/>v2: propone la fecha válida más cercana]:::error
-  F1 -->|corrige sin perder datos| E
-  F -- Sí --> G[Se muestran los horarios del día]
-  G --> H{¿Eligió horario?}
-  H -- No --> H1[Mensaje: Elija un horario disponible]:::error
-  H1 --> G
-  H -- Sí --> I[2.3 Paso 3: resumen editable]
-  I --> J{¿Datos correctos?}
-  J -- No: Cambiar fecha u hora --> E
-  J -- No: Cambiar especialidad --> C
-  J -- Sí --> K[Confirmar cita<br/>botón bloqueado + Registrando su cita…]
-  K --> L{¿El sistema respondió bien?}
-  L -- No --> L1[No pudimos registrar su cita<br/>datos conservados + Intentar de nuevo]:::error
-  L1 --> K
-  L -- Sí --> M[2.4 Comprobante con código CC-XXXX]:::exito
-  M --> N([Fin: Luis tiene su cita y su código])
+  A([Inicio: a Rosa le llega el SMS con el código]) --> B[1.0 Inicio]
+  B -->|Confirmar mi cita| C{¿La cita ya está<br/>guardada en el teléfono?}
+  C -- Sí --> G[2.2 Detalle de la cita]
+  C -- No --> D[2.1 Buscar mi cita: cédula + código<br/>lo escrito se guarda a cada tecla]
+  D --> E{¿Datos con formato válido?}
+  E -- No --> E1[Mensaje bajo el campo<br/>aria-invalid + aria-describedby]:::error
+  E1 --> D
+  E -- Sí --> F[Buscando… con segundos y límite de 12 s]
+  F --> F2{¿Respondió a tiempo?}
+  F2 -- No --> F3[Error de red con el motivo<br/>datos conservados + Reintentar]:::error
+  F3 --> F
+  F2 -- Sí --> F4{¿Cita encontrada?}
+  F4 -- No --> F5[No encontramos una cita con esos datos<br/>revise el SMS]:::error
+  F5 --> D
+  F4 -- Sí --> G
+  G --> H[Elige: Sí, asistiré / No podré asistir]
+  H --> I[Enviar mi respuesta<br/>botón bloqueado + Enviando… máx. 12 s]
+  I --> J{¿El centro de salud la recibió?}
+  J -- No --> K[Pendiente de envío: guardada en el teléfono<br/>v2: reintento accesible 15/30/60 s, pausar,<br/>reintentar al volver la señal]:::error
+  K -->|reintento manual o automático| I
+  J -- Sí --> L[2.3 Comprobante con código CF-XXXX<br/>se ve sin conexión]:::exito
+  L --> M[3.0 Estado de mi cita: Confirmada<br/>con hora de la última comprobación]:::exito
+  M --> N([Fin: Rosa sabe que su cita está confirmada])
   classDef error fill:#fff1f2,stroke:#a3001b,stroke-width:3px,color:#111
   classDef exito fill:#eefaf2,stroke:#0a5c27,stroke-width:3px,color:#111

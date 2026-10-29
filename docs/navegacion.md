@@ -1,55 +1,53 @@
-# Fase 2 · Sitemap, navegación y user flow · Caso IHC-05
+# Fase 2 · Sitemap, navegación y user flow · Caso IHC-06
 
-**Responsable:** Bryan Guatemal · **Revisor:** Karen Molina
+**Responsable:** Bryan Guatemal · **Revisora:** Karen Molina
 
 ## 1. Sitemap
 
 ![Sitemap](../diagramas/sitemap.png)
 
-Fuente editable: [`diagramas/sitemap.html`](../diagramas/sitemap.html). Es un sitemap plano: la tarea crítica queda a un clic desde el inicio y la profundidad máxima es 2. Esto sigue la regla de G2 de dejar lo importante a máximo 3 clics.
+Fuente editable: [`diagramas/sitemap.html`](../diagramas/sitemap.html). Tres secciones a un toque desde cualquier pantalla (pestañas fijas): **Inicio**, **Mi cita** y **Estado**. Es un sitemap plano a propósito: con señal débil, cada pantalla extra es una carga más.
 
-## 2. Tabla de navegación (de dónde → a dónde → con qué)
+## 2. Tabla de navegación
 
 | # | De | A | Con qué elemento | Paso del user flow | Regla que cumple |
 |---|---|---|---|---|---|
-| 1 | Cualquier pantalla | 1.0 / 2.1 / 3.0 | Menú superior; el ítem activo tiene `aria-current="page"` | Todo el recorrido | H1 visibilidad, H4 consistencia |
-| 2 | 1.0 Inicio | 2.1 Paso 1 | Botón grande «Reservar cita con especialista» | Inicio → Paso 1 | R1 |
-| 3 | 1.0 Inicio | Paso donde quedó | «Continuar la reserva» (si hay borrador) | Retoma el flujo | R5, H3 |
-| 4 | 2.1 Paso 1 | 2.2 Paso 2 | «Continuar al paso 2» (solo con datos válidos) | ¿Eligió especialidad y lugar? → Sí | H5 |
-| 5 | 2.1 Paso 1 | Se queda | Mensaje bajo el grupo, resumen de errores y foco en el campo | → No | H9, R4 |
-| 6 | 2.2 Paso 2 | 2.1 Paso 1 | «Volver al paso 1» (los datos se conservan) | Regreso | H3, R5 |
-| 7 | 2.2 Paso 2 | Se queda | Mensaje de fecha junto al campo; en v2 también «Usar la fecha …» | ¿Fecha válida? → No | H9, H5, R4 |
-| 8 | 2.2 Paso 2 | 2.3 Paso 3 | «Continuar al paso 3» | ¿Eligió horario? → Sí | R1 |
-| 9 | 2.3 Paso 3 | 2.1 / 2.2 | Enlaces «Cambiar» en cada fila del resumen; vuelven con «Guardar y volver al resumen» | ¿Datos correctos? → No | H3, R5 |
-| 10 | 2.3 Paso 3 | 2.4 Comprobante | «Confirmar cita» → estado «Registrando…» | ¿El sistema respondió? → Sí | H1, R6 |
-| 11 | 2.3 Paso 3 | Se queda | «Intentar de nuevo» tras un error del sistema (datos conservados) | → No | H9, R5 |
-| 12 | 2.x | 1.0 Inicio | «Cancelar reserva» → diálogo («No, seguir» / «Sí, salir»). Esc = seguir | Salida en cualquier paso | H3 |
-| 13 | 3.0 Mis citas | 3.2 Reprogramar (v2) | Botón «Reprogramar» de cada cita | Incidencia | R7 |
-| 14 | 3.2 Reprogramar | 3.0 Mis citas | «No reprogramar, mantener mi cita» | Salida | H3 |
+| 1 | Cualquier pantalla | 1.0 / 2.x / 3.0 | Pestañas Inicio · Mi cita · Estado; la activa tiene `aria-current="page"` | Todo el recorrido | H1, H4 |
+| 2 | 1.0 Inicio | 2.1 Buscar o 2.2 Detalle | «Confirmar mi cita». Si la cita ya está guardada en el teléfono, va directo al detalle. | ¿La cita ya está guardada? | R2 |
+| 3 | 2.1 Buscar | Se queda | Mensaje bajo el campo (cédula o código) | ¿Datos con formato válido? → No | H9 |
+| 4 | 2.1 Buscar | Se queda | Estado «Buscando…» → error de red con «Reintentar» (v2: bloque de reintento accesible) | ¿Respondió a tiempo? → No | H1, H9, R1, R3 |
+| 5 | 2.1 Buscar | 2.2 Detalle | Respuesta correcta del servidor | ¿Cita encontrada? → Sí | R1 |
+| 6 | 2.2 Detalle | 1.0 Inicio | «Volver sin responder» (la respuesta elegida queda guardada) | Salida | H3, R2 |
+| 7 | 2.2 Detalle | 2.3 Comprobante | «Enviar mi respuesta» → «Enviando…» → recibido | ¿Lo recibió? → Sí | R1, R4 |
+| 8 | 2.2 Detalle | Se queda | Fallo → «Pendiente de envío» + Reintentar (v2: automático, pausar, al volver la señal) | ¿Lo recibió? → No | R3, R7 |
+| 9 | 2.x | Se queda | «Detener» durante una espera | Salida de la espera | H3 |
+| 10 | 2.3 Comprobante | 3.0 Estado | «Ver estado de mi cita» | Cierre de la tarea | R5 |
+| 11 | 3.0 Estado | 2.2 Detalle | «Responder ahora» (si está sin responder) | — | R5 |
+| 12 | 3.0 Estado | Se queda | «Actualizar estado» o «Enviar ahora mi respuesta» (v2, si está pendiente) | — | R5, R7 |
 
 ### Adónde regresa el usuario
 
-- Tras **confirmar**: al comprobante (2.4), con el foco en el título «Su cita está confirmada».
-- Tras **cancelar la reserva**: al inicio, que muestra el aviso «Tiene una reserva sin terminar».
-- Tras **«Cambiar»** en el resumen: al paso correspondiente. El botón dice «Guardar y volver al resumen» y regresa al paso 3.
-- Tras **reprogramar** (v2): al comprobante de la misma cita, que indica la fecha anterior.
+- Tras **enviar con éxito**: al comprobante, con el foco en el título «Asistencia confirmada».
+- Tras un **fallo**: se queda en la misma pantalla con su respuesta guardada. En v2 el foco va al bloque de reintento.
+- Si **sale y vuelve** con una respuesta pendiente: el inicio muestra el aviso «pendiente de envío» y el reintento sigue programado (v2).
+- Si **recarga la página**: vuelve a la misma pantalla con todo lo escrito.
 
 ### Comprobación (G2)
 
 - [x] Cada flecha del user flow que cambia de pantalla tiene un elemento que la hace posible.
-- [x] Se puede salir de cada pantalla (volver o cancelar).
-- [x] El usuario sabe dónde está: menú con ítem activo, «Paso X de 3» y el título recibe el foco.
-- [x] Los nombres del menú coinciden con los títulos de las pantallas.
+- [x] Se puede salir de cada pantalla y de cada espera («Detener»).
+- [x] El usuario sabe dónde está (pestaña activa, título con foco) y en qué estado está la red (indicador).
+- [x] Los nombres de las pestañas coinciden con los títulos de las pantallas.
 
 ## 3. User flow con éxito y error recuperable
 
 ![User flow](../diagramas/user-flow.png)
 
-Fuente editable (Mermaid; GitHub la dibuja sola): [`diagramas/user-flow.mmd`](../diagramas/user-flow.mmd)
+Fuente editable (Mermaid): [`diagramas/user-flow.mmd`](../diagramas/user-flow.mmd)
 
-- **Camino feliz:** Inicio → Paso 1 → Paso 2 (fecha válida y horario) → Paso 3 → Confirmar → Comprobante.
+- **Camino feliz:** SMS → Inicio → Buscar mi cita → Detalle → Enviar respuesta → Comprobante → Estado: Confirmada.
 - **Errores recuperables:**
-  - **Fecha inválida:** mensaje junto al campo; Luis corrige sin perder nada.
-  - **Falta el horario:** se le pide elegir uno.
-  - **Error del sistema al confirmar:** «Intentar de nuevo» con los datos conservados.
-  - **Salida:** «Cancelar reserva» desde cualquier paso, con diálogo de confirmación. Lo elegido queda guardado como borrador.
+  - **Formato inválido:** mensaje bajo el campo.
+  - **Red caída o servidor sin respuesta:** la espera termina a los 12 s con el motivo y «Reintentar».
+  - **Cita no encontrada:** se pide revisar el SMS.
+  - **Respuesta no enviada:** queda «Pendiente de envío», guardada en el teléfono, y se reintenta sin volver a escribir nada.

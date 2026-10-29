@@ -1,28 +1,28 @@
-# Fase 2 · Requisitos observables · Caso IHC-05
+# Fase 2 · Requisitos observables · Caso IHC-06
 
 **Responsable:** Bryan Guatemal · **Revisor:** Carlos Bejarano
-**Actor:** Luis, adulto mayor con visión reducida · **Tarea:** reservar cita de especialidad
+**Actor:** Rosa, paciente con conexión intermitente · **Tarea:** confirmar una cita y consultar su estado
 
-**Regla (G2):** un requisito, un verbo. Se redacta desde el usuario y se numera para seguirlo hasta el wireframe y el código. Cada requisito tiene un **criterio observable**: algo que cualquiera puede comprobar en el prototipo.
+**Regla (G2):** un requisito, un verbo. Cada requisito tiene un **criterio observable** que cualquiera puede comprobar en el prototipo.
 
-| ID | Luis debe poder… | Verbo | Criterio observable (cómo se comprueba) | Origen |
+| ID | Rosa debe poder… | Verbo | Criterio observable (cómo se comprueba) | Origen |
 |---|---|---|---|---|
-| **R1** | Reservar una cita de especialidad en 3 pasos, sabiendo siempre en qué paso está | Reservar | Las pantallas de reserva muestran «Paso X de 3» con el paso actual marcado (`aria-current="step"`). La tarea termina en el comprobante después de 3 pantallas. | Tarea crítica |
-| **R2** | Recorrer todo el flujo solo con el teclado, viendo dónde está el foco | Recorrer | Con Tab, Mayús+Tab, flechas, Espacio y Enter se completa la reserva sin mouse. El foco tiene un anillo de 3 px negro con borde amarillo y contraste ≥ 3:1. Al cambiar de pantalla, el foco va al título. | Restricción · HZ-2 |
-| **R3** | Leer todos los textos con alto contraste y agrandar la letra | Leer | Todo el texto tiene contraste ≥ 7:1 (medido; tabla en `decisiones.md`). Los botones A / A+ / A++ cambian la letra a 100 / 125 / 150 % y «Contraste máximo» pasa a amarillo y blanco sobre negro. Con zoom del 200 % no se pierde contenido. | Restricción · HZ-2 |
-| **R4** | Entender por qué una fecha no es válida y cómo corregirla | Entender | Al elegir una fecha inválida aparece, debajo de la etiqueta, un mensaje con la causa y la corrección. El campo queda con `aria-invalid="true"` y `aria-describedby` apunta al mensaje, así que el lector lo lee al enfocarlo. El resumen de errores enlaza al campo. | **Fallo IHC-05** · HZ-1 |
-| **R5** | Conservar lo que ya eligió al volver, al cambiar un dato, al cancelar o si hay un error | Conservar | Desde el resumen, «Cambiar fecha» abre el paso 2 con la fecha y la hora puestas. Recargar la página no borra el borrador. «Cancelar reserva» pregunta antes y guarda lo elegido. Tras un error del sistema los datos siguen ahí. | Problema de la variante C · HZ-3 |
-| **R6** | Confirmar la cita y ver que quedó registrada | Confirmar | Antes de confirmar se ve un resumen editable. Al pulsar «Confirmar cita», el botón se bloquea y aparece «Registrando su cita…» (`role="status"`). Después aparece el comprobante con el código CC-XXXX y la opción de imprimirlo. | MV2 · HZ-3 |
-| **R7** | Reprogramar su cita sin perder la selección previa | Reprogramar | En «Mis citas», «Reprogramar» mantiene especialidad, médico y lugar, y solo pide la fecha y la hora nuevas. Si sale o hay un error, al volver encuentra lo que eligió. La cita original no cambia hasta confirmar. | **Incidencia sorpresa** (Fase 5 · Issue #5) |
+| **R1** | Ver que el sistema está trabajando, cuánto lleva y hasta cuándo esperar | Ver | Toda espera muestra «Buscando…» o «Enviando…» con `role="status"`, los segundos que lleva y el máximo (12 s). A los 12 s la espera **siempre** termina en un mensaje; hay un botón «Detener». Se prueba con la red «Servidor no responde». | **Fallo IHC-06** · HZ-1 |
+| **R2** | Conservar lo que escribió y su respuesta aunque se corte la señal | Conservar | La cédula, el código, la cita descargada y la respuesta se guardan en el teléfono (`localStorage`) a cada cambio. Recargar o cerrar la pestaña no borra nada. Un indicador muestra «En línea» o «Sin conexión». | **Restricción** · HZ-2 |
+| **R3** | Recuperarse de un fallo de red | Recuperarse | Si la red falla, aparece el motivo en palabras simples («Se perdió la conexión…», «El servidor tardó más de 12 segundos…») y «Reintentar», con los datos intactos | HZ-3 |
+| **R4** | Enviar su respuesta una sola vez | Enviar | Durante el envío el botón se bloquea. Cada respuesta lleva una clave única y, si llega dos veces, el servidor devuelve la misma confirmación (mismo código CF-XXXX). | H5 · HZ-2 |
+| **R5** | Consultar el estado de su cita y distinguir si está confirmada o solo guardada | Consultar | «Estado de mi cita» muestra uno de tres estados con texto propio: **Confirmada** (con la hora en que el centro de salud la recibió), **Pendiente de envío** (aún no confirmada) o **Sin responder**, más la hora de la última comprobación | MV2 · HZ-3 |
+| **R6** | Ver el comprobante aunque no tenga señal | Ver | El comprobante (código, fecha, lugar y hora de recepción) se guarda en el teléfono y se abre con la red en «Sin conexión» | T8 |
+| **R7** | Reintentar de forma accesible | Reintentar | Tras un fallo aparece un bloque que **recibe el foco** y se anuncia por el lector: motivo, «su respuesta está guardada pero NO confirmada», «Reintentar ahora», reintento automático (15 / 30 / 60 s) con **«Pausar»**, reintento al volver la señal y alternativa por SMS. Todo con teclado. | **Incidencia sorpresa** (Fase 5 · Issue #5) |
 
 ## Lo que no es requisito y por qué existe
 
 | Elemento | Justificación |
 |---|---|
-| Botón «Cancelar reserva» y su diálogo | Es la salida del usuario (H3, control y libertad), no una tarea que Luis quiera lograr. Igual que en G2, aparece en la navegación y los componentes, no como requisito aparte. |
-| Inicio de sesión | Queda fuera de alcance: se supone que Luis ya entró. El prototipo es vertical y se concentra en reservar. |
-| «Mis citas» y «Cancelar cita» | Dan contexto y son la puerta de entrada a R7 |
+| «Volver sin responder» y «Detener» | Son salidas del usuario (H3, control y libertad), no tareas que Rosa quiera lograr |
+| Mensaje SMS en el inicio | Es el punto de partida simulado de la tarea (T1); el prototipo no envía SMS reales |
+| Panel del observador y «Red simulada» | Herramientas de la prueba para provocar cortes de red de forma controlada; el participante no las ve |
 
 ## Uso en los demás productos
 
-Los mismos R1–R7 se usan en el sitemap (pantalla donde ocurre cada uno), el user flow (paso), los componentes (pieza que lo cubre), los wireframes (marca dentro del cuadro) y el código (función de `app.js`). Ver [`trazabilidad.md`](trazabilidad.md).
+Los mismos R1–R7 se usan en el sitemap, el user flow, los componentes, los wireframes (marcas) y el código (`app.js`). Ver [`trazabilidad.md`](trazabilidad.md).

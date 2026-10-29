@@ -1,60 +1,54 @@
-# Fase 2 · Inventario de componentes (Atomic Design) · Caso IHC-05
+# Fase 2 · Inventario de componentes (Atomic Design) · Caso IHC-06
 
 **Responsable:** Bryan Guatemal · **Revisora:** Karen Molina
-
-Piezas reutilizables, de átomo a página. Cada una existe porque cubre un requisito (regla 3 de G2). La columna «En el código» dice dónde está cada pieza para poder mostrarla en la defensa.
 
 ## Átomos
 
 | Componente | Estados | Requisito | En el código |
 |---|---|---|---|
-| Botón primario | normal · hover · foco · deshabilitado (durante el envío) | R1, R6 | `.boton--primario` (styles.css) |
-| Botón secundario / de texto | normal · foco | H3 (salidas) | `.boton--secundario`, `.boton--texto` |
-| Etiqueta (`label` / `legend`) | — | R4 | `.etiqueta`, `legend` |
-| Texto de ayuda | — | R4 (v2: días de atención) | `.ayuda`; `ayudaFecha()` en v2 |
-| Campo de fecha (`input type="date"`) | normal · foco · inválido (`aria-invalid`) | R4 | `#fecha` |
-| Lista desplegable (médico) | habilitada · deshabilitada hasta elegir especialidad | R1 | `#medico` |
-| Mensaje de error | oculto · visible | R4 | `mostrarError()` / `limpiarError()` → `.mensaje-error` |
-| Indicador de carga (spinner + texto) | visible durante la espera | R6 | `.cargando`, `.spinner` (respeta `prefers-reduced-motion`) |
-| Insignia de estado | Confirmada · Confirmada (reprogramada) · Cancelada | R6, R7 | `.insignia` |
-| Anillo de foco | visible con teclado | R2 | `:focus-visible` (negro 3 px + amarillo) |
+| Botón primario / secundario / de texto | normal · foco · deshabilitado durante el envío | R1, R4 | `.boton--primario`, `.boton--secundario`, `.boton--texto` |
+| Campo de texto (cédula, código) | normal · foco · inválido (`aria-invalid`) | R2, R3 | `#cedula`, `#codigo` |
+| Etiqueta y texto de ayuda | — | R3 | `.etiqueta`, `.ayuda` |
+| Mensaje de error | oculto · visible | R3 | `mostrarError()` → `.mensaje-error` |
+| Indicador de conexión | En línea · Sin conexión (`role="status"`) | R2 | `#indicador-red`, `actualizarIndicador()` |
+| Contador de segundos | 0 … 12 s | R1 | `#segundos`, `iniciarContador()` |
+| Insignia de estado | v1: Sin responder · ✓ Guardada · ✓ Confirmada. v2: Sin responder · ⏳ Pendiente de envío · ✓ Confirmada | R5 | `.insignia`, `.insignia--pendiente` (v2) |
+| Nota «se guarda en este teléfono» | — | R2 | `.guardado-local` |
 
 ## Moléculas
 
 | Componente | Formado por | Estados | Requisito | En el código |
 |---|---|---|---|---|
-| Campo con etiqueta, ayuda y error | etiqueta + ayuda + mensaje de error + campo | normal · error | R4 | `.campo` / `.campo--error` |
-| Opción grande (radio) | radio + texto + detalle | normal · elegida · foco | R1, R2 | `.opcion` |
-| Tarjeta de horario | radio + hora + estado en texto | disponible · ocupado · elegido · hora actual (v2) | R3 (v2), R7 | `htmlHoras()`, `.hora` |
-| Indicador de pasos | 3 pastillas | hecho · actual (`aria-current="step"`) · pendiente | R1 | `pasos(n)` |
-| Botones de ajuste de lectura | 4 botones con `aria-pressed` | presionado · no presionado | R3 | `.ajustes`, `aplicarAjustes()` |
-| Sugerencia de fecha (v2) | botón «Usar el …» | visible · oculta | R4 (H5) | `#sugerencia`, `proximaFecha()` |
-| Fila de resumen | término + valor + «Cambiar» | con / sin enlace | R5 | `detalleCita()` |
+| Campo con etiqueta, ayuda y error | etiqueta + ayuda + error + campo | normal · error | R3 | `.campo`, `.campo--error` |
+| Opción de respuesta (radio grande) | radio + texto | normal · elegida · foco | R2 | `.opcion` |
+| Bloque de carga | spinner + texto + segundos + «Detener» | visible durante la espera | R1 | `htmlCargando()` |
+| Tarjeta SMS | remitente + texto + código | — | R2 | `.sms` |
+| Lista de datos de la cita | término + valor | — | R5, R6 | `detalleCita()` |
 
 ## Organismos
 
 | Componente | Estados | Requisito | En el código |
 |---|---|---|---|
-| Encabezado (marca + menú + ajustes) | ítem activo marcado | R2, R3 | `<header class="cabecera">`, `marcarMenu()` |
-| Formulario de especialidad y lugar | normal · con errores | R1, R5 | `VISTAS['paso-1']` |
-| Selector de fecha y horario | vacío · error de fecha · horarios visibles | R4, R5 | `VISTAS['paso-2']`; en v2 `htmlFormFechaHora()` + `montarFormFechaHora()` |
-| Resumen de errores | oculto · visible con enlaces | R4 | `mostrarErrores()` → `.resumen-errores` |
-| Resumen de la cita | editable (paso 3) · solo lectura (comprobante) | R5, R6 | `detalleCita(c, conCambiar)` |
-| Bloque de estado del envío | cargando · error del sistema | R6 | `confirmarCita()` (v1) / `enviarAlSistema()` (v2) |
-| Diálogo de confirmación | cerrado · abierto (Esc = opción segura) | H3 | `<dialog id="dialogo">`, `preguntar()` |
-| Panel del observador | oculto · visible (F2) | Fase 4 (medición) | `observador.js` |
+| Cabecera + pestañas | pestaña activa | R2 | `.cabecera`, `.menu`, `marcarMenu()` |
+| Formulario de identificación | vacío · con errores · buscando · fallo | R1, R2, R3 | `VISTAS.identificacion` |
+| Formulario de respuesta | sin elegir · enviando · pendiente | R1, R2, R4 | `VISTAS.cita` |
+| Aviso de envío fallido (v1) | ✓ guardada + «Reintentar» (sin foco ni anuncio) | R3 | `enviarRespuesta()` (catch) en v1 |
+| **Bloque de reintento accesible (v2)** | esperando (cuenta regresiva) · pausado · reintentando · intentos agotados (+ alternativa SMS) | R3, R7 | `htmlReintento()`, `pintarReintento()`, `programarReintento()`, `ejecutar()` |
+| Comprobante | Asistencia confirmada · Turno liberado | R6 | `VISTAS.comprobante` |
+| Tarjeta de estado de la cita | Confirmada · Pendiente · Sin responder | R5 | `VISTAS.estado` |
+| Panel del observador + red simulada | oculto · visible (F2) | Fase 4 | `observador.js`, `Observador.agregarControl` |
 
 ## Plantillas y páginas
 
-| Plantilla | Páginas que la usan |
+| Plantilla | Páginas |
 |---|---|
-| Paso de formulario: indicador de pasos + título + resumen de errores + formulario + acciones | 2.1 Paso 1 · 2.2 Paso 2 · 3.2 Reprogramar (v2) |
-| Resultado: bloque de éxito + resumen de solo lectura + acciones | 2.4 Comprobante · 3.1 Ver comprobante |
-| Lista: título + tarjetas | 3.0 Mis citas · 1.0 Inicio |
+| Formulario móvil: título + campos + zona de estado + botones de ancho completo | 2.1 Buscar mi cita · 2.2 Detalle y respuesta |
+| Resultado: bloque de éxito + datos + acciones | 2.3 Comprobante |
+| Tarjeta de estado | 3.0 Estado de mi cita · 1.0 Inicio (aviso) |
 
 ## Reglas que seguimos (G2)
 
-1. Si se repite, es componente: el campo con error es el mismo en los pasos 1 y 2 y en la reprogramación.
-2. Un nombre, una función: «Cambiar» siempre lleva a editar, nunca borra.
-3. Cada componente se justifica con un requisito (columna «Requisito»).
-4. Consistencia: el botón primario siempre está a la izquierda y es la acción que avanza.
+1. Si se repite, es componente: el mismo bloque de reintento sirve para «buscar» y para «responder».
+2. Un nombre, una función: «Guardada» (v1) se eliminó en v2 porque se confundía con «Confirmada».
+3. Cada componente se justifica con un requisito.
+4. La zona de estado (`#zona-estado`) está siempre en el mismo lugar: debajo del formulario y encima de los botones.
