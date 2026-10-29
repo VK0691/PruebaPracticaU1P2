@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CitaClara · Reservar cita de especialidad (v1)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="saltar" href="#contenido" data-saltar>Saltar al contenido principal</a>
+
+  <header class="cabecera">
+    <div class="marca"><span class="logo" aria-hidden="true">✚</span>CitaClara<span class="version">Prototipo v1</span></div>
+    <nav aria-label="Menú principal">
+      <ul>
+        <li><a href="#/inicio" data-menu="inicio">Inicio</a></li>
+        <li><a href="#/paso-1" data-menu="paso">Reservar cita</a></li>
+        <li><a href="#/mis-citas" data-menu="mis-citas">Mis citas</a></li>
+      </ul>
+    </nav>
+    <div class="ajustes" role="group" aria-label="Ajustes de lectura">
+      <span aria-hidden="true">Letra:</span>
+      <button type="button" data-tam="1" aria-pressed="true">A<span class="solo-lector"> tamaño normal</span></button>
+      <button type="button" data-tam="1.25" aria-pressed="false">A+<span class="solo-lector"> letra grande</span></button>
+      <button type="button" data-tam="1.5" aria-pressed="false">A++<span class="solo-lector"> letra muy grande</span></button>
+      <button type="button" id="btn-contraste" aria-pressed="false">Contraste máximo</button>
+    </div>
+  </header>
+
+  <main id="contenido" tabindex="-1">
+    <div id="vista"></div>
+  </main>
+
+  <!-- Región que anuncia cambios al lector de pantalla -->
+  <div id="anuncio" class="solo-lector" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Diálogo reutilizable de confirmación (Cancelar reserva / Cancelar cita) -->
+  <dialog id="dialogo" aria-labelledby="dialogo-titulo" aria-describedby="dialogo-texto">
+    <h2 id="dialogo-titulo"></h2>
+    <p id="dialogo-texto"></p>
+    <div class="acciones">
+      <button type="button" class="boton boton--primario" id="dialogo-seguro"></button>
+      <button type="button" class="boton boton--secundario" id="dialogo-peligro"></button>
+    </div>
+  </dialog>
+
+  <script src="observador.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
