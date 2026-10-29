@@ -1,0 +1,26 @@
+flowchart TD
+  A([Inicio: a Rosa le llega el SMS con el código]) --> B[1.0 Inicio]
+  B -->|Confirmar mi cita| C{¿La cita ya está<br/>guardada en el teléfono?}
+  C -- Sí --> G[2.2 Detalle de la cita]
+  C -- No --> D[2.1 Buscar mi cita: cédula + código<br/>lo escrito se guarda a cada tecla]
+  D --> E{¿Datos con formato válido?}
+  E -- No --> E1[Mensaje bajo el campo<br/>aria-invalid + aria-describedby]:::error
+  E1 --> D
+  E -- Sí --> F[Buscando… con segundos y límite de 12 s]
+  F --> F2{¿Respondió a tiempo?}
+  F2 -- No --> F3[Error de red con el motivo<br/>datos conservados + Reintentar]:::error
+  F3 --> F
+  F2 -- Sí --> F4{¿Cita encontrada?}
+  F4 -- No --> F5[No encontramos una cita con esos datos<br/>revise el SMS]:::error
+  F5 --> D
+  F4 -- Sí --> G
+  G --> H[Elige: Sí, asistiré / No podré asistir]
+  H --> I[Enviar mi respuesta<br/>botón bloqueado + Enviando… máx. 12 s]
+  I --> J{¿El centro de salud la recibió?}
+  J -- No --> K[Pendiente de envío: guardada en el teléfono<br/>v2: reintento accesible 15/30/60 s, pausar,<br/>reintentar al volver la señal]:::error
+  K -->|reintento manual o automático| I
+  J -- Sí --> L[2.3 Comprobante con código CF-XXXX<br/>se ve sin conexión]:::exito
+  L --> M[3.0 Estado de mi cita: Confirmada<br/>con hora de la última comprobación]:::exito
+  M --> N([Fin: Rosa sabe que su cita está confirmada])
+  classDef error fill:#fff1f2,stroke:#a3001b,stroke-width:3px,color:#111
+  classDef exito fill:#eefaf2,stroke:#0a5c27,stroke-width:3px,color:#111
